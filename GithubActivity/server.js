@@ -1,19 +1,19 @@
-const path = require("path");
+//const Octokit = require("octokit");
+import { Octokit } from "octokit";
+import dotenv from "dotenv";
 
-async function userDetails(userName) {
-  try {
-    if (!userName && userName === "") {
-      console.log("Credenties was missing!");
-      return;
-    }
-    const res = await fetch(`https://github.com/users/${userName}/events`);
-    const data = await res.json();
-    console.log(data);
-  } catch (error) {
-    console.log(error);
-  }
-}
+dotenv.config();
+
+const octokit = new Octokit();
 
 const args = process.argv.splice(2);
+const userName = args[0];
+const repo = args[1];
+const data = await octokit.request(`GET /users/${userName}/events`, {
+  username: userName,
+  headers: {
+    "X-GitHub-Api-Version": "2022-11-28",
+  },
+});
 
-userDetails(args[0]);
+data.data.map((item) => console.log(item));
